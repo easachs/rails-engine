@@ -9,15 +9,17 @@ RSpec.describe 'Merchants' do
     expect(response).to be_successful
 
     merchants = JSON.parse(response.body, symbolize_names: true)
+    merchants_data = merchants[:data]
 
-    expect(merchants.count).to eq(3)
-    expect(merchants).to be_a(Array)
+    expect(merchants_data.count).to eq(3)
+    expect(merchants_data).to be_a(Array)
 
-    merchants.each do |merchant|
+    merchants_data.each do |merchant|
+      merchants_attributes = merchant[:attributes]
       expect(merchant).to have_key(:id)
-      expect(merchant[:id]).to be_a(Integer)
-      expect(merchant).to have_key(:name)
-      expect(merchant[:name]).to be_a(String)
+      expect(merchant[:id]).to be_a(String)
+      expect(merchants_attributes).to have_key(:name)
+      expect(merchants_attributes[:name]).to be_a(String)
     end
   end
 
@@ -27,12 +29,14 @@ RSpec.describe 'Merchants' do
     get "/api/v1/merchants/#{id}"
 
     merchant = JSON.parse(response.body, symbolize_names: true)
+    merchant_data = merchant[:data]
+    merchant_attributes = merchant_data[:attributes]
 
     expect(response).to be_successful
 
-    expect(merchant).to have_key(:id)
-    expect(merchant[:id]).to be_a(Integer)
-    expect(merchant).to have_key(:name)
-    expect(merchant[:name]).to be_a(String)
+    expect(merchant_data).to have_key(:id)
+    expect(merchant_data[:id]).to be_a(String)
+    expect(merchant_attributes).to have_key(:name)
+    expect(merchant_attributes[:name]).to be_a(String)
   end
 end
