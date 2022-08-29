@@ -1,11 +1,15 @@
-class Api::V1::ItemsController < ApplicationController
+# frozen_string_literal: true
 
-  def index
-    render json: ItemSerializer.new(Item.all)
-  end
+module Api
+  module V1
+    class ItemsController < ApplicationController
+      def index
+        render json: ItemSerializer.new(Item.all)
+      end
 
-  def show
-    render json: ItemSerializer.new(Item.find(params[:id]))
+      def show
+        render json: ItemSerializer.new(Item.find(params[:id]))
+      end
+    end
   end
-  
 end
