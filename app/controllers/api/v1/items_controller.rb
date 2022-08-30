@@ -21,7 +21,8 @@ module Api
       end
 
       def destroy
-        render json: find_item.delete
+        find_item.trash_invoices
+        find_item.destroy!
       end
 
       private
