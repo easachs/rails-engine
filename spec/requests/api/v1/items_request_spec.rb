@@ -195,14 +195,47 @@ RSpec.describe 'Items' do
   it 'destroys an item' do
     merchant = Merchant.create!(name: 'Wizards Chest')
 
-    id = create(:item).id
+    item = create(:item)
+    id = item.id
 
     expect(Item.count).to eq(1)
 
     delete "/api/v1/items/#{id}"
 
     expect(response).to be_successful
+    expect(response.body).to eq('')
+    expect(response.status).to eq(204)
     expect(Item.count).to eq(0)
-    # expect(Item.find(id)).to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  it 'destroys an items empty invoice' do
+    merchant = Merchant.create!(name: 'Wizards Chest')
+
+    item = create(:item)
+    other = create(:item)
+    id = item.id
+    invoice_1 = Invoice.create!
+    invoice_2 = Invoice.create!
+    invoice_item = InvoiceItem.create!(item: item, invoice: invoice_1)
+    invoice_item = InvoiceItem.create!(item: item, invoice: invoice_2)
+    invoice_item = InvoiceItem.create!(item: other, invoice: invoice_2)
+
+    expect(Item.count).to eq(2)
+    expect(Invoice.count).to eq(2)
+
+    delete "/api/v1/items/#{id}"
+
+    expect(response).to be_successful
+    expect(response.body).to eq('')
+    expect(response.status).to eq(204)
+    expect(Item.count).to eq(1)
+    expect(Invoice.count).to eq(1)
+  end
+
+  it 'destroys an item sad path' do
+    delete '/api/v1/items/woops'
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
   end
 end

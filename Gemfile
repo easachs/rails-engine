@@ -46,6 +46,7 @@ end
 group :test do
   gem 'rspec-rails'
   gem 'rubocop-rspec'
+  gem 'shoulda-matchers'
   gem 'simplecov'
 end
 
