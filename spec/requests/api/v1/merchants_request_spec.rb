@@ -41,4 +41,11 @@ RSpec.describe 'Merchants' do
     expect(merchant_attributes).to have_key(:name)
     expect(merchant_attributes[:name]).to be_a(String)
   end
+
+  it 'fetches one merchant sad path' do
+    get '/api/v1/merchants/woops'
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
+  end
 end
