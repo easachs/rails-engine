@@ -10,6 +10,21 @@ module Api
       def show
         render json: ItemSerializer.new(Item.find(params[:id]))
       end
+
+      def create
+        render json: ItemSerializer.new(Item.create!(item_params))
+      end
+
+      def update
+        Item.find(params[:id]).update(item_params)
+        render json: ItemSerializer.new(Item.find(params[:id]))
+      end
+
+      private
+
+      def item_params
+        params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
+      end
     end
   end
 end
