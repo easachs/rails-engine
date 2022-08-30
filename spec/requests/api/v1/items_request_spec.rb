@@ -162,6 +162,36 @@ RSpec.describe 'Items' do
     expect(item_attributes[:fake_attr]).to be_nil
   end
 
+  it 'fetches an items merchant' do
+    merchant = create(:merchant)
+    other = create(:merchant)
+    item = Item.create!(name: 'Candy', merchant_id: merchant.id)
+    Item.create!(name: 'Cabbage', merchant_id: other.id)
+
+    get "/api/v1/items/#{item.id}/merchant"
+
+    expect(response).to be_successful
+
+    merchant = JSON.parse(response.body, symbolize_names: true)
+    merchant_data = merchant[:data]
+    merchant_attributes = merchant_data[:attributes]
+
+    expect(merchant).to_not include('Cabbage')
+    expect(merchant.count).to eq(1)
+    expect(merchant_data).to be_a(Hash)
+    expect(merchant_data).to have_key(:id)
+    expect(merchant_data[:id]).to be_a(String)
+    expect(merchant_attributes).to have_key(:name)
+    expect(merchant_attributes[:name]).to be_a(String)
+  end
+
+  it 'fetches merchants items sad path' do
+    get '/api/v1/items/woops/merchant'
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
+  end
+
   it 'destroys an item' do
     merchant = Merchant.create!(name: 'Wizards Chest')
 

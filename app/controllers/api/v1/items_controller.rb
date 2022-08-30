@@ -16,7 +16,7 @@ module Api
       end
 
       def update
-        find_item.update(item_params)
+        find_item.update!(item_params)
         render json: ItemSerializer.new(Item.find(params[:id]))
       end
 

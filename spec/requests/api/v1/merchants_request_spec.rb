@@ -48,4 +48,44 @@ RSpec.describe 'Merchants' do
     expect(response).to_not be_successful
     expect(response.status).to eq(404)
   end
+
+  it 'fetches a merchants items' do
+    merchant = create(:merchant)
+    other = create(:merchant)
+    Item.create!(name: 'Candy', merchant_id: merchant.id)
+    Item.create!(name: 'Puppy', merchant_id: merchant.id)
+    Item.create!(name: 'Rainbow', merchant_id: merchant.id)
+    Item.create!(name: 'Cabbage', merchant_id: other.id)
+
+    get "/api/v1/merchants/#{merchant.id}/items"
+
+    expect(response).to be_successful
+
+    items = JSON.parse(response.body, symbolize_names: true)
+    items_data = items[:data]
+
+    expect(items).to_not include('Cabbage')
+
+    expect(items_data.count).to eq(3)
+    expect(items_data).to be_a(Array)
+
+    items_data.each do |item|
+      items_attributes = item[:attributes]
+      expect(item).to have_key(:id)
+      expect(item[:id]).to be_a(String)
+      expect(items_attributes).to have_key(:name)
+      expect(items_attributes[:name]).to be_a(String)
+      expect(items_attributes).to have_key(:description)
+      expect(items_attributes).to have_key(:unit_price)
+      expect(items_attributes).to have_key(:merchant_id)
+      expect(items_attributes[:merchant_id]).to be_a(Integer)
+    end
+  end
+
+  it 'fetches merchants items sad path' do
+    get '/api/v1/merchants/woops/items'
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
+  end
 end
