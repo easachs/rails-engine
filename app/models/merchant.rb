@@ -7,4 +7,9 @@ class Merchant < ApplicationRecord
     where('name ILIKE ?', "%#{search}%")
       .order(:name).first
   end
+
+  def self.find_all_name(search)
+    where('name ILIKE ?', "%#{search}%")
+      .order(:name)
+  end
 end
