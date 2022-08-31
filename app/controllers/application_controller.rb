@@ -11,4 +11,12 @@ class ApplicationController < ActionController::API
   def empty400
     render json: { error: 'No results', data: {} }, status: 400
   end
+
+  def render_item(item)
+    render json: ItemSerializer.new(item)
+  end
+
+  def render_merchant(merchant)
+    render json: MerchantSerializer.new(merchant)
+  end
 end

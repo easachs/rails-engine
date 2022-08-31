@@ -5,7 +5,7 @@ module Api
     class ItemMerchantsController < ApplicationController
       def index
         item = Item.find(params[:item_id])
-        render json: MerchantSerializer.new(item.merchant)
+        render_merchant(item.merchant)
       end
     end
   end

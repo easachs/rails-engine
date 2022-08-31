@@ -4,11 +4,11 @@ module Api
   module V1
     class ItemsController < ApplicationController
       def index
-        render json: ItemSerializer.new(Item.all)
+        render_item(Item.all)
       end
 
       def show
-        render json: ItemSerializer.new(find_item)
+        render_item(find_item)
       end
 
       def create
@@ -17,7 +17,7 @@ module Api
 
       def update
         find_item.update!(item_params)
-        render json: ItemSerializer.new(Item.find(params[:id]))
+        render_item(Item.find(params[:id]))
       end
 
       def destroy
