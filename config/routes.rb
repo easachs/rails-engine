@@ -3,10 +3,12 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      get '/merchants/find', to: 'find#find_merchant'
-      get '/merchants/find_all', to: 'find#find_all_merchants'
-      get '/items/find', to: 'find#find_item'
-      get '/items/find_all', to: 'find#find_all_items'
+      %i[merchants items].each do |space|
+        namespace space do
+          get '/find', to: 'find#find'
+          get '/find_all', to: 'find#find_all'
+        end
+      end
 
       resources :merchants, only: %i[index show] do
         resources :items, only: [:index], controller: :merchant_items
