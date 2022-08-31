@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'Find' do
@@ -6,7 +8,7 @@ RSpec.describe 'Find' do
       merchant = create(:merchant)
       Item.create!(name: 'Candy', unit_price: 10.0, merchant_id: merchant.id)
       Item.create!(name: 'Casserole', unit_price: 7.5, merchant_id: merchant.id)
-      cabbage = Item.create!(name: 'Cabbage', unit_price: 6.25, merchant_id: merchant.id)
+      Item.create!(name: 'Cabbage', unit_price: 6.25, merchant_id: merchant.id)
       Item.create!(name: 'Sprinkles', unit_price: 5.0, merchant_id: merchant.id)
       Item.create!(name: 'Rainbow', unit_price: 2.5, merchant_id: merchant.id)
       Item.create!(name: 'Unicorn', unit_price: 2.0, merchant_id: merchant.id)
@@ -30,7 +32,7 @@ RSpec.describe 'Find' do
       get '/api/v1/items/find?name=unfortunatelynameditem'
 
       json_response = JSON.parse(response.body, symbolize_names: true)
-      expect(json_response[:data]).to be_nil
+      expect(json_response[:data]).to eq({})
     end
 
     it 'finds items by name' do
@@ -95,7 +97,7 @@ RSpec.describe 'Find' do
       get '/api/v1/items/find?min_price=7.50&max_price=4.75'
 
       json_response = JSON.parse(response.body, symbolize_names: true)
-      expect(json_response[:data]).to be_nil
+      expect(json_response[:data]).to eq({})
     end
 
     it 'finds items by min and max price' do
@@ -130,8 +132,7 @@ RSpec.describe 'Find' do
       get '/api/v1/items/find_all?min_price=7.50&max_price=4.75'
 
       json_response = JSON.parse(response.body, symbolize_names: true)
-      expect(json_response[:data]).to be_a(Array)
-      expect(json_response[:data].length).to eq(0)
+      expect(json_response[:data]).to eq([])
     end
 
     it 'finds an item by min price' do
@@ -151,7 +152,7 @@ RSpec.describe 'Find' do
       item_attributes = item_data[:attributes]
       expect(item_data).to have_key(:id)
       expect(item_data[:id]).to be_a(String)
-      
+
       expect(item_attributes).to have_key(:name)
       expect(item_attributes[:name]).to be_a(String)
       expect(item_attributes[:unit_price]).to be_a(Float)
@@ -162,12 +163,12 @@ RSpec.describe 'Find' do
       get '/api/v1/items/find?min_price=11.0'
 
       json_response = JSON.parse(response.body, symbolize_names: true)
-      expect(json_response[:data]).to be_nil
+      expect(json_response[:data]).to eq({})
 
-      get '/api/v1/items/find_all?min_price=notaprice'
+      get '/api/v1/items/find?min_price=-1.0'
 
       json_response = JSON.parse(response.body, symbolize_names: true)
-      # expect(json_response[:data]).to be_nil
+      expect(json_response[:data]).to eq({})
     end
 
     it 'finds items by min price' do
@@ -204,11 +205,11 @@ RSpec.describe 'Find' do
       expect(json_response[:data]).to be_a(Array)
       expect(json_response[:data].length).to eq(0)
 
-      get '/api/v1/items/find_all?min_price=notaprice'
+      get '/api/v1/items/find_all?min_price=-1.0'
 
       json_response = JSON.parse(response.body, symbolize_names: true)
-      expect(json_response[:data]).to be_a(Array)
-      expect(json_response[:data].length).to eq(0)
+      expect(json_response[:error]).to eq('No results')
+      expect(response.status).to eq(400)
     end
 
     it 'finds an item by max price' do
@@ -239,12 +240,12 @@ RSpec.describe 'Find' do
       get '/api/v1/items/find?max_price=0.01'
 
       json_response = JSON.parse(response.body, symbolize_names: true)
-      expect(json_response[:data]).to be_nil
+      expect(json_response[:data]).to eq({})
 
-      get '/api/v1/items/find_all?max_price=notaprice'
+      get '/api/v1/items/find?max_price=-1.0'
 
       json_response = JSON.parse(response.body, symbolize_names: true)
-      # expect(json_response[:data]).to be_nil
+      expect(json_response[:data]).to eq({})
     end
 
     it 'finds items by max price' do
@@ -281,11 +282,11 @@ RSpec.describe 'Find' do
       expect(json_response[:data]).to be_a(Array)
       expect(json_response[:data].length).to eq(0)
 
-      get '/api/v1/items/find_all?max_price=notaprice'
+      get '/api/v1/items/find_all?max_price=-1.0'
 
       json_response = JSON.parse(response.body, symbolize_names: true)
-      expect(json_response[:data]).to be_a(Array)
-      expect(json_response[:data].length).to eq(0)
+      expect(json_response[:error]).to eq('No results')
+      expect(response.status).to eq(400)
     end
 
     it 'find one error if no params' do

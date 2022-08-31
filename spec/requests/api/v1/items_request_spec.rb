@@ -101,7 +101,7 @@ RSpec.describe 'Items' do
   end
 
   it 'updates an item' do
-    merchant = Merchant.create!(name: 'Wizards Chest')
+    Merchant.create!(name: 'Wizards Chest')
 
     id = create(:item).id
 
@@ -132,7 +132,7 @@ RSpec.describe 'Items' do
   end
 
   it 'updates an item sad path' do
-    merchant = Merchant.create!(name: 'Wizards Chest')
+    Merchant.create!(name: 'Wizards Chest')
 
     id = create(:item).id
 
@@ -193,7 +193,7 @@ RSpec.describe 'Items' do
   end
 
   it 'destroys an item' do
-    merchant = Merchant.create!(name: 'Wizards Chest')
+    Merchant.create!(name: 'Wizards Chest')
 
     item = create(:item)
     id = item.id
@@ -209,16 +209,16 @@ RSpec.describe 'Items' do
   end
 
   it 'destroys an items empty invoice' do
-    merchant = Merchant.create!(name: 'Wizards Chest')
+    Merchant.create!(name: 'Wizards Chest')
 
     item = create(:item)
     other = create(:item)
     id = item.id
-    invoice_1 = Invoice.create!
-    invoice_2 = Invoice.create!
-    invoice_item = InvoiceItem.create!(item: item, invoice: invoice_1)
-    invoice_item = InvoiceItem.create!(item: item, invoice: invoice_2)
-    invoice_item = InvoiceItem.create!(item: other, invoice: invoice_2)
+    invoice1 = Invoice.create!
+    invoice2 = Invoice.create!
+    InvoiceItem.create!(item: item, invoice: invoice1)
+    InvoiceItem.create!(item: item, invoice: invoice2)
+    InvoiceItem.create!(item: other, invoice: invoice2)
 
     expect(Item.count).to eq(2)
     expect(Invoice.count).to eq(2)

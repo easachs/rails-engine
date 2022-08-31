@@ -13,18 +13,17 @@ RSpec.describe Item, type: :model do
     it 'deletes empty invoices' do
       item = create(:item)
       other = create(:item)
-      id = item.id
-      invoice_1 = Invoice.create!
-      invoice_2 = Invoice.create!
-      invoice_item = InvoiceItem.create!(item: item, invoice: invoice_1)
-      invoice_item = InvoiceItem.create!(item: item, invoice: invoice_2)
-      invoice_item = InvoiceItem.create!(item: other, invoice: invoice_2)
+      invoice1 = Invoice.create!
+      invoice2 = Invoice.create!
+      InvoiceItem.create!(item: item, invoice: invoice1)
+      InvoiceItem.create!(item: item, invoice: invoice2)
+      InvoiceItem.create!(item: other, invoice: invoice2)
 
       expect(Invoice.count).to eq(2)
       expect(InvoiceItem.count).to eq(3)
       item.trash_invoices
       expect(Invoice.count).to eq(1)
-      expect(Invoice.first).to eq(invoice_2)
+      expect(Invoice.first).to eq(invoice2)
       expect(InvoiceItem.count).to eq(2)
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe 'Find' do
@@ -25,7 +27,7 @@ RSpec.describe 'Find' do
       get '/api/v1/merchants/find?name=unfortunatelynamedstore'
 
       json_response = JSON.parse(response.body, symbolize_names: true)
-      expect(json_response[:data]).to be_nil
+      expect(json_response[:data]).to eq({})
     end
 
     it 'finds all merchants' do

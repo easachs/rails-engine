@@ -11,7 +11,7 @@ RSpec.describe Merchant, type: :model do
     it 'finds a merchant by name' do
       create_list(:merchant, 3)
       pc = Merchant.create!(name: 'Pirates Chest')
-      wc = Merchant.create!(name: 'Wizards Chest')
+      Merchant.create!(name: 'Wizards Chest')
 
       expect(Merchant.find_name('chest')).to eq(pc)
       expect(Merchant.find_name('abcxyz')).to be_nil
