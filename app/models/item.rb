@@ -11,7 +11,7 @@ class Item < ApplicationRecord
                            .group('invoices.id')
                            .having('count(items) = 1')
 
-    one_and_done.each { |invoice| Invoice.find(invoice.id).destroy! }
+    one_and_done.destroy_all
   end
 
   def self.find_name(search)
